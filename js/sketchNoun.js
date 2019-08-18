@@ -18,32 +18,20 @@ var size1 = 5;
 var size2 = 30;
 var sizeScalar = 0.97;
 
-var textContent1 = "While riding on a train goin’ west,";
-var textContent2 = "I fell asleep for to take my rest,";
-var textContent3 = "I dreamed a dream that made me sad,";
-var textContent4 = "Concerning myself and the first few friends I had ";
-const frequency = 0.002;
-const fontSize = 80;
+var angle ;
+var speed;
+
 
 //auto start variables
 let centerX, centerY, startX, step, amplitude;
 
-function preload(){
-  font = loadFont("data/miso-bold.ttf");
-
-}
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
   canvas.style('z-index',-1);
   
-  textFont(font, fontSize);
-  // textAlign(CENTER);
-  centerX = windowWidth/2;
-  centerY = 100;
-  step = 0;
-  startX = centerX - textWidth(textContent1) / 2;
+ 
 }
 
 function windowResized() {
@@ -51,9 +39,31 @@ function windowResized() {
 }
 
 function draw() {
-	
-  // background('#de5915');
   background('#841815');
+
+  push();
+  translate(windowWidth/2, windowHeight/2);
+  rectMode(CENTER);
+
+  for ( let i = 1; i< 60; i+=3) {
+    noFill();
+    //angle = map(sin(millis()/10000.0), -1, 1, 0, 360);
+    angle = sin(radians(i*0.2-frameCount*0.8))*10;
+    rotate(radians(angle));
+
+     swAmp = 2+i*0.3;
+    strokeWeight(swAmp);
+    if (i%2==0) {
+      stroke('#ae2800');
+
+      rect(0, 0, i*30, i*30,i*8);
+    } else {
+      stroke('#e76700');
+
+      rect(0, 0, i*30, i*30,i*5);
+    }
+}
+pop();
 
   
   
@@ -61,32 +71,6 @@ function draw() {
   fill(255);
   noStroke();
 
-  step += 0.01;
-  amplitude = map(mouseY, 0, height, 0, 800);
-  
-  //draw text
-  let x = startX;
-  for (var i = 0; i < textContent1.length; i++) {
-    let charWidth = textWidth(textContent1.charAt(i));
-    x += charWidth/2;
-    let y = getY(x);
-  
-    //calculate angle
-    let angle = atan2(getY(x - charWidth / 2) - getY(x + charWidth / 2), -fontSize) + PI;
-    angle *= 2;//expression
-    push();
-      //apply angle
-      translate(x, y);
-        rotate(angle);
-      translate(-x, -y);  
-      text(textContent1.charAt(i), x-charWidth/2, y);
-      text(textContent2.charAt(i), x-charWidth/2, y+fontSize*1);
-      text(textContent3.charAt(i), x-charWidth/2, y+fontSize*2);
-      text(textContent4.charAt(i), x-charWidth/2, y+fontSize*3);
-
-    pop();
-    x += charWidth/2;
-  }
 
 
 
@@ -105,9 +89,6 @@ function draw() {
   }
 
 
-
-  
-
    update();
     
     for (var i = particles.length - 1; i >= 0; i--) {
@@ -116,34 +97,7 @@ function draw() {
 
 }
 
-function getY(x){
-  return centerY / 2 + noise(step, x * frequency) * amplitude;
-}
 
-// function noiseMovement(stepAmp, mapStartY, mapEndY,textSample,line){
-//   step += stepAmp;
-//   amplitude = map(mouseY, 0, height, mapStartY, mapEndY);
-
-//   let x = startX;
-//   for (var i = 0; i < textSample; i++) {
-//     let charWidth = textWidth(textSample.charAt(i));
-//     x += charWidth/2;
-//     let y = getY(x);
-
-//     let angle = atan2(getY(x - charWidth / 2) - getY(x + charWidth / 2), -fontSize) + PI;
-//     angle *= 2;//expression
-//     push();
-//       //apply angle
-//       translate(x, y);
-//         rotate(angle);
-//       translate(-x, -y); 
-//       fill(255); 
-//       text(textSample.charAt(i), x-charWidth/2, y+fontSize*line);
-
-//     pop();
-//     x += charWidth/2;
-//   }
-// }
 
 
 // PARTICLE CODE
@@ -215,7 +169,6 @@ function moved() {
 
 function mouseMoved() {
    moved();
-   startX = mouseX - textWidth(textContent4 )/2;
 }
 
 function touchMoved() {

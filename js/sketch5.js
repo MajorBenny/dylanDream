@@ -1,4 +1,13 @@
-var font;
+  var textContent1 = "As easy it was to tell black from white . ";
+  var textContent2 = "It was all that easy to tell wrong from right.";
+  var textContent3 = "And our choices were few and the thought never hit.";
+  var textContent4 = "That the one road we traveled would ever shatter and split.";
+  var textContent5 = "How many a year has passed and gone. ";
+  var textContent6 = "And many a gamble has been lost and won.";
+  var textContent7 = "And many a road taken by many a friend .";
+  var textContent8 = "And each one I’ve never seen again.";
+
+  var font;
 var ranges = 100;
 var MAX_PARTICLES = 120;
 var COLORS = [ '#ffffff', '#511815', '#e2a400', '#e54100', '#ff7359','#ff1317' ];
@@ -18,10 +27,6 @@ var size1 = 5;
 var size2 = 30;
 var sizeScalar = 0.97;
 
-var textContent1 = "While riding on a train goin’ west,";
-var textContent2 = "I fell asleep for to take my rest,";
-var textContent3 = "I dreamed a dream that made me sad,";
-var textContent4 = "Concerning myself and the first few friends I had ";
 const frequency = 0.002;
 const fontSize = 80;
 
@@ -51,8 +56,7 @@ function windowResized() {
 }
 
 function draw() {
-	
-  // background('#de5915');
+  console.log("HI");
   background('#841815');
 
   
@@ -62,7 +66,7 @@ function draw() {
   noStroke();
 
   step += 0.01;
-  amplitude = map(mouseY, 0, height, 0, 800);
+  amplitude = map(mouseY, 0, height, 100, 800);
   
   //draw text
   let x = startX;
@@ -83,6 +87,9 @@ function draw() {
       text(textContent2.charAt(i), x-charWidth/2, y+fontSize*1);
       text(textContent3.charAt(i), x-charWidth/2, y+fontSize*2);
       text(textContent4.charAt(i), x-charWidth/2, y+fontSize*3);
+      text(textContent5.charAt(i), x-charWidth/2, y+fontSize*4);
+      text(textContent6.charAt(i), x-charWidth/2, y+fontSize*5);
+      text(textContent7.charAt(i), x-charWidth/2, y+fontSize*6);
 
     pop();
     x += charWidth/2;

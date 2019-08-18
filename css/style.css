@@ -13,22 +13,37 @@ html {
        font-family: 'Amatic SC', cursive;
 
        font-size: 140px;
-       color: black; 
+       color: white; 
    }
+   h1:hover{
+  letter-spacing: 10px;
+  transition:all .3s ease-in-out;
+}
 
-   a{
+  a, a:link, a:visited, a:focus, a:active{
+    text-decoration: none ;
    	font-family: 'Amatic SC', cursive;
 
-       font-size: 60px;
-       color: grey; 
+    font-size: 60px;
+    color: #ffffff; 
    }
+
+a:hover{
+  letter-spacing: 5px;
+  transition:all .3s ease-in-out;
+}
 
    p{
    	font-family: 'Amatic SC', cursive;
 
        font-size: 42px;
        color: black; 
+   }
 
+   img {
+    position: absolute;
+    top: 30px;
+    left: 30px;
    }
 
 button { 
@@ -52,6 +67,20 @@ button {
  button:hover {
   background-color: #555555;
   color: white;
+}
+
+#button-back {
+ 
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+}
+
+#button-next {
+
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
 }
 
 

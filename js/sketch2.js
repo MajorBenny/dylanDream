@@ -1,35 +1,49 @@
-var font,fontSize;
-var joinedText;
-var alphabet = 'ABCDEFGHIJKLMNORSTUVWYZ,.;!? ';
-var counters = [];
+  var textContent1 = "With half-damp eyes I stared to the room. ";
+  var textContent2 = "Where my friends and I spent many an afternoon.";
+  var textContent3 = "Where we together weathered many a storm";
 
-var posX;
-var posY;
+  var font;
+var ranges = 100;
+var MAX_PARTICLES = 120;
+var COLORS = [ '#ffffff', '#511815', '#e2a400', '#e54100', '#ff7359','#ff1317' ];
+//ARRAYS
+var particles = [];
+var pool = [];
+//VARIABLES
+var wander1 = 0.5;
+var wander2 = 2.0;
+var drag1 = .9;
+var drag2 = .99;
+var force1 = 2;
+var force2 = 8;
+var theta1 = -0.5;
+var theta2 = 0.5;
+var size1 = 5;
+var size2 = 30;
+var sizeScalar = 0.97;
 
-var drawAlpha = true;
+const frequency = 0.002;
+const fontSize = 80;
+
+//auto start variables
+let centerX, centerY, startX, step, amplitude;
 
 function preload(){
   font = loadFont("data/miso-bold.ttf");
-  joinedText = loadStrings('data/word2.rtf');
 
 }
 
 function setup() {
-
   var canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
   canvas.style('z-index',-1);
-  textFont(font, 30);
-  noStroke();
-
-  joinedText = joinedText.join(' ');
-
-  for (var i = 0; i < alphabet.length; i++) {
-    counters[i] = 0;
-  }
-
-  countCharacters();
-
+  
+  textFont(font, fontSize);
+  // textAlign(CENTER);
+  centerX = windowWidth/2;
+  centerY = 100;
+  step = 0;
+  startX = centerX - textWidth(textContent1) / 2;
 }
 
 function windowResized() {
@@ -37,60 +51,171 @@ function windowResized() {
 }
 
 function draw() {
+  console.log("HI");
+  background('#841815');
 
-  background(255);
+  
+  
+  // noiseMovement(0.001, 200, 800,textContent1,0);
+  fill(255);
+  noStroke();
 
-	posX = 20;
-  posY = 40;
+  step += 0.01;
+  amplitude = map(mouseY, 0, height, 100, 800);
+  
+  //draw text
+  let x = startX;
+  for (var i = 0; i < textContent1.length; i++) {
+    let charWidth = textWidth(textContent1.charAt(i));
+    x += charWidth/2;
+    let y = getY(x);
+  
+    //calculate angle
+    let angle = atan2(getY(x - charWidth / 2) - getY(x + charWidth / 2), -fontSize) + PI;
+    angle *= 2;//expression
+    push();
+      //apply angle
+      translate(x, y);
+        rotate(angle);
+      translate(-x, -y);  
+      text(textContent1.charAt(i), x-charWidth/2, y);
+      text(textContent2.charAt(i), x-charWidth/2, y+fontSize*1);
+      text(textContent3.charAt(i), x-charWidth/2, y+fontSize*2);
 
-  // go through all characters in the text to draw them
-  for (var i = 0; i < joinedText.length; i++) {
-    // again, find the index of the current letter in the character set
-    var upperCaseChar = joinedText.charAt(i).toUpperCase();
-    var index = alphabet.indexOf(upperCaseChar);
-    if (index < 0) continue;
+    pop();
+    x += charWidth/2;
+  }
 
-    if (drawAlpha) {
-      fill(87, 35, 129, counters[index] * 3);
-    } else {
-      fill(87, 35, 129);
+
+
+  noFill();
+  stroke('#d0202b');
+  for (var i = 0.1; i <= ranges; i++) {
+    var paintR = map(i, 0.1, ranges, 90, 255);
+    stroke(paintR,30,30);
+    beginShape();
+    for (var x1 = -0.1; x1 <= width + 0.1; x1 += 60.0) {
+      var n = noise(x1 * 0.001, i * 0.001, frameCount * 0.01);
+      var y = map(n, 0, 1, 0, height);
+      vertex(x1, y);
+    }
+    endShape();
+  }
+
+
+
+  
+
+   update();
+    
+    for (var i = particles.length - 1; i >= 0; i--) {
+      particles[i].show();
     }
 
-    var sortY = index * 20 + 40;
-    var m = map(mouseX, 50, width - 50, 0, 1);
-    m = constrain(m, 0, 1);
-    var interY = lerp(posY, sortY, m);
+}
 
-    text(joinedText.charAt(i), posX, interY);
+function getY(x){
+  return centerY / 2 + noise(step, x * frequency) * amplitude;
+}
 
-    posX += textWidth(joinedText.charAt(i));
-    if (posX >= width - 200 && upperCaseChar == ' ') {
-      posY += 30;
-      posX = 20;
+// function noiseMovement(stepAmp, mapStartY, mapEndY,textSample,line){
+//   step += stepAmp;
+//   amplitude = map(mouseY, 0, height, mapStartY, mapEndY);
+
+//   let x = startX;
+//   for (var i = 0; i < textSample; i++) {
+//     let charWidth = textWidth(textSample.charAt(i));
+//     x += charWidth/2;
+//     let y = getY(x);
+
+//     let angle = atan2(getY(x - charWidth / 2) - getY(x + charWidth / 2), -fontSize) + PI;
+//     angle *= 2;//expression
+//     push();
+//       //apply angle
+//       translate(x, y);
+//         rotate(angle);
+//       translate(-x, -y); 
+//       fill(255); 
+//       text(textSample.charAt(i), x-charWidth/2, y+fontSize*line);
+
+//     pop();
+//     x += charWidth/2;
+//   }
+// }
+
+
+// PARTICLE CODE
+
+function Particle(x,y,size) {
+    this.alive = true;
+    this.size = size || 10;
+    this.wander = 0.15;
+    this.theta = random( TWO_PI );
+    this.drag = 0.92;
+    this.color = '#fff';
+    this.location = createVector(x || 0.0, y || 0.0);
+    this.velocity = createVector(0.0, 0.0);
+}
+
+Particle.prototype.move = function() {
+    this.location.add(this.velocity);
+    this.velocity.mult(this.drag);
+    this.theta += random( theta1, theta2 ) * this.wander;
+    this.velocity.x += sin( this.theta ) * 0.1;
+    this.velocity.y += cos( this.theta ) * 0.1;
+    this.size *= sizeScalar;
+    this.alive = this.size > 0.5;
+}
+
+Particle.prototype.show = function() {
+  //arc( this.location.x, this.location.y, this.size, 0, TWO_PI );
+  fill( this.color);
+  noStroke();
+  rectMode(CENTER);
+  rect(this.location.x,this.location.y, this.size, this.size);
+}
+
+function spawn(x,y) {
+    var particle, theta, force;
+    if ( particles.length >= MAX_PARTICLES ) {
+        pool.push( particles.shift() );
     }
-  }
+    particle = new Particle(mouseX, mouseY, random(size1,size2));
+    particle.wander = random( wander1, wander2 );
+    particle.color = random( COLORS );
+    particle.drag = random( drag1, drag2 );
+    theta = random( TWO_PI );
+    force = random( force1, force2 );
+    particle.velocity.x = sin( theta ) * force;
+    particle.velocity.y = cos( theta ) * force;
+    particles.push( particle );
 }
 
-function countCharacters() {
-  for (var i = 0; i < joinedText.length; i++) {
-    // get one character from the text and turn it to uppercase
-    var c = joinedText.charAt(i);
-    var upperCaseChar = c.toUpperCase();
-    var index = alphabet.indexOf(upperCaseChar);
-    // increase the respective counter
-    if (index >= 0) counters[index]++;
-  }
+function update() {
+    var i, particle;
+    for ( i = particles.length - 1; i >= 0; i-- ) {
+        particle = particles[i];
+        if ( particle.alive ) {
+          particle.move();
+        } else {
+          pool.push( particles.splice( i, 1 )[0] );
+        }
+    }
 }
 
-function getUniqCharacters() {
-  var charsArray = joinedText.toUpperCase().split('');
-  var uniqCharsArray = charsArray.filter(function(char, index) {
-    return charsArray.indexOf(char) == index;
-  }).sort();
-  return uniqCharsArray.join('');
+function moved() {
+    var particle, max, i;
+    max = random( 1, 4 );
+    for ( i = 0; i < max; i++ ) {
+      spawn( mouseX, mouseY );
+    }
 }
 
-function keyReleased() {
-  if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
-  if (key == 'a' || key == 'A') drawAlpha = !drawAlpha;
+function mouseMoved() {
+   moved();
+   startX = mouseX - textWidth(textContent1 )/2;
+}
+
+function touchMoved() {
+    moved();
 }

@@ -1,3 +1,8 @@
+  var textContent1 = "By the old wooden stove where our hats was hung. ";
+  var textContent2 = "Our words were told, our songs were sung.";
+  var textContent3 = "Where we longed for nothin’ and were quite satisfied.";
+  var textContent4 = "Talkin’ and a-jokin’ about the world outside.";
+
 var font;
 var ranges = 100;
 var MAX_PARTICLES = 120;
@@ -18,10 +23,6 @@ var size1 = 5;
 var size2 = 30;
 var sizeScalar = 0.97;
 
-var textContent1 = "While riding on a train goin’ west,";
-var textContent2 = "I fell asleep for to take my rest,";
-var textContent3 = "I dreamed a dream that made me sad,";
-var textContent4 = "Concerning myself and the first few friends I had ";
 const frequency = 0.002;
 const fontSize = 80;
 
@@ -51,8 +52,7 @@ function windowResized() {
 }
 
 function draw() {
-	
-  // background('#de5915');
+  console.log("HI");
   background('#841815');
 
   
@@ -62,7 +62,7 @@ function draw() {
   noStroke();
 
   step += 0.01;
-  amplitude = map(mouseY, 0, height, 0, 800);
+  amplitude = map(mouseY, 0, height, 100, 800);
   
   //draw text
   let x = startX;

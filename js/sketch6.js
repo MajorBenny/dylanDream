@@ -1,3 +1,10 @@
+ var textContent1 = "I wish, I wish, I wish in vain";
+  var textContent2 = "That we could sit simply in that room again .";
+  var textContent3 = "Ten thousand dollars at the drop of a hat.";
+  var textContent4 = "I’d give it all gladly if our lives could be like that.";
+
+
+
 var font;
 var ranges = 100;
 var MAX_PARTICLES = 120;
@@ -18,10 +25,6 @@ var size1 = 5;
 var size2 = 30;
 var sizeScalar = 0.97;
 
-var textContent1 = "While riding on a train goin’ west,";
-var textContent2 = "I fell asleep for to take my rest,";
-var textContent3 = "I dreamed a dream that made me sad,";
-var textContent4 = "Concerning myself and the first few friends I had ";
 const frequency = 0.002;
 const fontSize = 80;
 
@@ -51,8 +54,7 @@ function windowResized() {
 }
 
 function draw() {
-	
-  // background('#de5915');
+  console.log("HI");
   background('#841815');
 
   
@@ -62,7 +64,7 @@ function draw() {
   noStroke();
 
   step += 0.01;
-  amplitude = map(mouseY, 0, height, 0, 800);
+  amplitude = map(mouseY, 0, height, 100, 800);
   
   //draw text
   let x = startX;
